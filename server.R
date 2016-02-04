@@ -1,18 +1,21 @@
-library(shiny) 
+#server.R
+library(shiny)
+library(UsingR)
+data(galton)
 
-BMI<-function(weight,height) {weight/(height^2)}
-
-diagnostic_f<-function(weight,height){
-  BMI_value<-weight/(height^2)
-  ifelse(BMI_value<18.5,"underweight",ifelse(BMI_value<25,"normal weight",ifelse(BMI_value<30,"overweight","obesity")))
-}
-
+mod<-lm(child~parent, data=galton)
 shinyServer(
-  function(input, output) {
-    
-    output$inputweightvalue <- renderPrint({input$weight})
-    output$inputheightvalue <- renderPrint({input$height})
-    output$estimation <- renderPrint({BMI(input$weight,input$height)})
-    output$diagnostic <- renderPrint({diagnostic_f(input$weight,input$height)})
-  } 
+  function(input, output){
+    go<-eventReactive(input$calculate,{
+      momi<-input$momcm/2.54
+      dadi<-input$dadcm/2.54
+      mphi<-(momi*1.08+dadi)/2
+      chld<-predict(mod,data.frame(parent=c(mphi)),interval="predict")
+      chld<-chld*2.54
+      paste('Child\'s height between',format(round(chld[2],2),nsmall=2),'and',format(round(chld[3],2),nsmall=2),'cm')
+    })
+    output$out<-renderText({
+      go()
+    })
+  }
 )
