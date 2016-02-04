@@ -1,33 +1,23 @@
-library(shiny) 
+#ui.R
+library(shiny)
 shinyUI(
   pageWithSidebar(
-    # Application title
-    headerPanel("Body Mass Index (BMI) Calculator"),
-    
+    headerPanel("Child Height Estimator SI"),
     sidebarPanel(
-      numericInput('weight', 'Insert your Weight in kilograms', 78) ,
-      numericInput('height', 'Insert your height in metres', 1.85, min = 0.2, max = 3, step = 0.01),
-      submitButton('Submit')
-    ), 
+      p('Enter parent heights and press the "Tell me!" button to estimate a child\'s height.'),
+      p('Please make sure the heights are in centimeters'),
+      p('The result is the 95% confidence interval based on Galton\'s data from 1885.'),
+      p('You may access the sales presentation for this product'),
+      a(href="http://rpubs.com/emac2010letstalk/pitch","here")
+    ),
     mainPanel(
-      p('The Body mass index (BMI) is a measure of body fat based on your weight in relation to your height, and applies to most adult men and women aged 20 and over.'),
-      p('BMI is used as a screening tool to indicate whether a person is underweight, overweight, obese or a healthy weight for their height.'),
-      p('Regarding the BMI measure, the World Health Organization (WHO) proposes the following classification:'),
-      tags$div(
-        tags$ul(
-          tags$li('BMI <18.5       : Underweight'),
-          tags$li('BMI [18.5-24.9] : Normal weight'),
-          tags$li('BMI [25-29.9]   : Overweight'),
-          tags$li('BMI >=30        : Obesity')
-        )
-      ),
-      
-      h4('Your BMI is:'),
-      verbatimTextOutput("estimation"),
-      p('It means that you are:'),strong(verbatimTextOutput("diagnostic"))
-      
-      
+      numericInput('momcm','Height of mom (cm)',0),
+      numericInput('dadcm','Height of dad (cm)',0),
+      actionButton("calculate","Tell me!"),
+      br(),
+      br(),
+      p("output:"),
+      verbatimTextOutput("out")
     )
-    
-  )   
+  )
 )
